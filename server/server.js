@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 
+
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -13,11 +14,19 @@ var {authenticate} = require('./middleware/authenticate');
 var app = express();
 const port = process.env.PORT;
 
-app.all('/', function(req, res, next) {
+
+app.use('/', function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With, x-auth");
-  res.header("Access-Control-Allow-Methods", "GET");
-  next();
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+
+    // intercept OPTIONS method
+  if ('OPTIONS' == req.method) {
+    res.send(200);
+  }
+  else {
+    next();
+  }
  });
 
 app.use(bodyParser.json());
